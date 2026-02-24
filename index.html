@@ -274,9 +274,9 @@
     </div>
 
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('drinks')">☕️ Напитки</div>
-        <div class="tab" onclick="switchTab('food')">🥐 Еда</div>
-        <div class="tab" onclick="switchTab('finance')">💰 Финансы</div>
+        <div class="tab active" onclick="switchTab(event, 'drinks')">☕️ Напитки</div>
+        <div class="tab" onclick="switchTab(event, 'food')">🥐 Еда</div>
+        <div class="tab" onclick="switchTab(event, 'finance')">💰 Финансы</div>
     </div>
 
     <div class="total-preview" id="totalPreview">Сумма в кассе: 0 руб. | Позиций: 0</div>
@@ -368,7 +368,7 @@
             document.getElementById('food-container').innerHTML = food.map(createCounterItem).join('');
         }
 
-        function switchTab(tabId) {
+        function switchTab(event, tabId) {
             if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -404,7 +404,7 @@
 
             const preview = document.getElementById('totalPreview');
             preview.style.display = (totalItems > 0 || totalFinance > 0) ? 'block' : 'none';
-            preview.innerText = \`Итого: \${totalFinance} руб. | Позиций: \${totalItems}\`;
+            preview.innerText = `Итого: ${totalFinance} руб. | Позиций: ${totalItems}`;
 
             if (totalItems > 0 || totalFinance > 0) {
                 tg.MainButton.show();
