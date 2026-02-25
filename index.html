@@ -26,7 +26,10 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         body {
@@ -514,7 +517,7 @@
         };
 
         // Отправка данных боту
-        tg.onEvent('mainButtonClicked', function () {
+        window.submitData = function () {
             const isInventory = document.getElementById('inventory').classList.contains('active');
             let data = {};
 
@@ -541,9 +544,13 @@
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             tg.MainButton.showProgress();
 
-            // Отправка в телеграм
-            tg.sendData(JSON.stringify(data));
-        });
+            // Отправка в телеграм с небольшой задержкой для надежности
+            setTimeout(() => {
+                tg.sendData(JSON.stringify(data));
+            }, 50);
+        };
+
+        tg.MainButton.onClick(window.submitData);
 
         // Инициализация скрытой кнопки на старте
         tg.MainButton.hide();
