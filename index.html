@@ -4,118 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Отчет за смену</title>
+    <title>Отчет Кофейни</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #c28e75;
-            /* Premium Coffee brown */
-            --primary-light: #d6a894;
-            --bg-gradient-1: #2a2220;
-            --bg-gradient-2: #161211;
+            --bg-gradient: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
             --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #fcf9f8;
-            --text-muted: #b8aba6;
-            --danger: #cf6679;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b5;
+            --accent: #d4a373;
+            --accent-hover: #faedcd;
+            --danger: #e63946;
+            --success: #2a9d8f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
-            color: var(--text-main);
-            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
             background-attachment: fixed;
-            -webkit-font-smoothing: antialiased;
-            /* Leave space at bottom for Telegram Main Button */
-            padding-bottom: 80px;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px 16px 100px;
+            overflow-x: hidden;
         }
 
-        /* Profile Section */
-        .profile-section {
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+            padding: 20px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Profile Header */
+        .profile-card {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             margin-bottom: 24px;
-            padding: 12px 16px;
-            background: var(--glass-bg);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
+            padding: 20px;
         }
 
-        .profile-avatar {
-            width: 40px;
-            height: 40px;
+        .avatar {
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--accent), #b5835a);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
             font-weight: 700;
-            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
             color: white;
         }
 
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .profile-name {
+        .profile-info h2 {
+            font-size: 20px;
             font-weight: 600;
-            font-size: 16px;
+            letter-spacing: 0.5px;
         }
 
-        .profile-role {
-            font-size: 13px;
+        .profile-info p {
             color: var(--text-muted);
+            font-size: 13px;
         }
 
-        /* Tabs UI */
+        /* Tabs */
         .tabs {
             display: flex;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 16px;
-            padding: 4px;
+            padding: 6px;
             margin-bottom: 24px;
+            position: relative;
         }
 
         .tab {
             flex: 1;
             text-align: center;
             padding: 12px 0;
-            border-radius: 12px;
-            font-weight: 500;
             font-size: 14px;
+            font-weight: 500;
             color: var(--text-muted);
-            transition: all 0.3s ease;
             cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .tab.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(194, 142, 117, 0.3);
+            color: var(--bg-gradient);
+            background: var(--accent);
+            box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3);
+            font-weight: 600;
         }
 
+        /* Tab Content */
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: slideIn 0.3s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        @keyframes fadeIn {
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(5px);
+                transform: translateY(10px);
             }
 
             to {
@@ -124,381 +139,416 @@
             }
         }
 
-        /* Lists */
-        .section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 22px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
+        /* Category Title */
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-title i {
+            font-style: normal;
+        }
+
+        /* Counter Item */
         .item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding: 4px 0;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s, background 0.2s;
         }
 
-        .item:last-child {
-            margin-bottom: 0;
+        .item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.07);
         }
 
         .item-name {
-            font-size: 16px;
-            font-weight: 400;
+            font-size: 15px;
+            font-weight: 500;
         }
 
         .counter-group {
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 12px;
             padding: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .btn-counter {
             width: 36px;
             height: 36px;
             border: none;
-            border-radius: 10px;
-            background: var(--glass-bg);
-            color: var(--primary);
+            background: transparent;
+            color: var(--accent);
             font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: background 0.2s;
         }
 
         .btn-counter:active {
-            transform: scale(0.85);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(212, 163, 115, 0.2);
         }
 
         .counter-value {
             width: 44px;
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
+            color: var(--text-main);
             background: transparent;
             border: none;
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .counter-value:focus {
             outline: none;
         }
 
-        /* Inputs */
-        .input-group {
-            margin-bottom: 18px;
+        .counter-value::-webkit-inner-spin-button,
+        .counter-value::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
-        .input-group:last-child {
-            margin-bottom: 0;
+        /* Finance Inputs */
+        .input-group {
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .amount-input,
         .text-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 16px;
-            color: var(--text-main);
-            font-size: 18px;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .text-input {
-            font-size: 16px;
-            min-height: 80px;
-            resize: vertical;
+            color: white;
+            font-size: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
         }
 
         .amount-input:focus,
         .text-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(194, 142, 117, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
         }
 
-        /* Helpers */
+        .text-input {
+            font-size: 15px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Total Preview */
         .total-preview {
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.1), rgba(42, 157, 143, 0.05));
+            border: 1px solid rgba(42, 157, 143, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 24px;
             text-align: center;
-            font-size: 14px;
-            color: var(--primary-light);
-            margin-top: -10px;
-            margin-bottom: 20px;
-            font-weight: 500;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--success);
             display: none;
-        }
-
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type="number"] {
-            -moz-appearance: textfield;
+            animation: fadeIn 0.3s ease;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="profile-section" id="profile">
-        <div class="profile-avatar" id="avatar">Б</div>
+    <!-- Header -->
+    <div class="profile-card glass-panel">
+        <div class="avatar" id="avatar">Б</div>
         <div class="profile-info">
-            <div class="profile-name" id="username">Бариста</div>
-            <div class="profile-role">Сотрудник кофейни</div>
+            <h2 id="username">Бариста</h2>
+            <p>Панель управления смены</p>
         </div>
     </div>
 
+    <!-- Navigation -->
     <div class="tabs">
         <div class="tab active" onclick="switchTab(event, 'drinks')">☕️ Напитки</div>
         <div class="tab" onclick="switchTab(event, 'food')">🥐 Еда</div>
-        <div class="tab" onclick="switchTab(event, 'finance')">💰 Финансы</div>
+        <div class="tab" onclick="switchTab(event, 'finance')">💰 Касса</div>
         <div class="tab" onclick="switchTab(event, 'inventory')">📦 Склад</div>
     </div>
 
-    <div class="total-preview" id="totalPreview">Сумма в кассе: 0 руб. | Позиций: 0</div>
-
-    <!-- ТАБ: НАПИТКИ -->
-    <div id="drinks" class="tab-content active section">
+    <!-- Drinks Tab -->
+    <div id="drinks" class="tab-content active glass-panel">
+        <div class="category-title"><i>☕️</i> Продажи напитков</div>
         <div id="drinks-container"></div>
     </div>
 
-    <!-- ТАБ: ЕДА -->
-    <div id="food" class="tab-content section">
+    <!-- Food Tab -->
+    <div id="food" class="tab-content glass-panel">
+        <div class="category-title"><i>🥐</i> Продажи еды</div>
         <div id="food-container"></div>
     </div>
 
-    <!-- ТАБ: ФИНАНСЫ -->
-    <div id="finance" class="tab-content section">
+    <!-- Finance Tab -->
+    <div id="finance" class="tab-content glass-panel">
+        <div class="category-title"><i>💰</i> Финансы за смену</div>
+
         <div class="input-group">
             <label>Наличные в кассе</label>
             <input type="number" id="cash" class="amount-input check-val" placeholder="0" min="0" inputmode="numeric"
                 oninput="checkValidation()">
         </div>
+
         <div class="input-group">
             <label>Безнал / Терминал</label>
             <input type="number" id="card" class="amount-input check-val" placeholder="0" min="0" inputmode="numeric"
                 oninput="checkValidation()">
         </div>
+
         <div class="input-group">
-            <label>Расходы из кассы (если были)</label>
+            <label>Расходы из кассы (списания)</label>
             <input type="number" id="expenses" class="amount-input" placeholder="0" min="0" inputmode="numeric">
         </div>
-        <div class="input-group" style="margin-top: 24px;">
-            <label>Комментарий за смену (опционально)</label>
+
+        <div class="input-group" style="margin-top: 32px;">
+            <label>Комментарий (опционально)</label>
             <textarea id="comment" class="text-input"
-                placeholder="Напишите, если были списания, проблемы или что-то особенное..."></textarea>
-        </div>
-        <!-- ТАБ: СКЛАД (ПРИХОД) -->
-        <div id="inventory" class="tab-content section">
-            <div class="section-title" style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
-                Укажите количество поступивших ингредиентов при приемке товара.
-            </div>
-            <div id="inventory-container"></div>
+                placeholder="Опишите, если были нестандартные возвраты или проблемы..."></textarea>
         </div>
 
+        <div id="totalPreview" class="total-preview">
+            Итого: 0 руб. | Позиций: 0
+        </div>
+    </div>
 
-        <script>
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            tg.ready();
+    <!-- Inventory Tab -->
+    <div id="inventory" class="tab-content glass-panel">
+        <div class="category-title"><i>📦</i> Поступление товаров</div>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5;">Укажите количество
+            ингредиентов при их поступлении (закупке), чтобы пересчитать остатки на складе.</p>
+        <div id="inventory-container"></div>
+    </div>
 
-            // Оформление профиля и Telegram Main Button
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const user = tg.initDataUnsafe.user;
-                document.getElementById('username').innerText = user.first_name || 'Бариста';
-                document.getElementById('avatar').innerText = (user.first_name || 'Б').charAt(0).toUpperCase();
-            }
+    <script>
+        // Инициализация Telegram API
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
 
-            // Настраиваем главную кнопку Telegram
-            tg.MainButton.text = "ОТПРАВИТЬ ОТЧЕТ";
-            tg.MainButton.color = "#c28e75";
-            tg.MainButton.textColor = "#ffffff";
-            tg.MainButton.onClick(() => sendDataToBot());
+        // Установка данных профиля
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            document.getElementById('username').innerText = user.first_name || 'Бариста';
+            document.getElementById('avatar').innerText = (user.first_name || 'Б').charAt(0).toUpperCase();
+        } else {
+            document.getElementById('username').innerText = 'Гость';
+            document.getElementById('avatar').innerText = 'Г';
+        }
 
-            const drinks = [
-                { id: 'espresso', name: 'Эспрессо' },
-                { id: 'americano', name: 'Американо' },
-                { id: 'cappuccino', name: 'Капучино' },
-                { id: 'latte', name: 'Латте' },
-                { id: 'flatwhite', name: 'Флэт Уайт' },
-                { id: 'raf', name: 'Раф' },
-                { id: 'tea', name: 'Чай' },
-                { id: 'other_drinks', name: 'Другие напитки' }
-            ];
+        // Данные для генерации полей
+        const drinksData = [
+            { id: 'espresso', name: 'Эспрессо' },
+            { id: 'americano', name: 'Американо' },
+            { id: 'cappuccino', name: 'Капучино' },
+            { id: 'latte', name: 'Латте' },
+            { id: 'flatwhite', name: 'Флэт Уайт' },
+            { id: 'raf', name: 'Раф' },
+            { id: 'tea', name: 'Чай' },
+            { id: 'other_drinks', name: 'Другие напитки' }
+        ];
 
-            const food = [
-                { id: 'pastry', name: 'Выпечка' },
-                { id: 'dessert', name: 'Десерты' },
-                { id: 'sandwiches', name: 'Сэндвичи' }
-            ];
+        const foodData = [
+            { id: 'pastry', name: 'Выпечка' },
+            { id: 'dessert', name: 'Десерты' },
+            { id: 'sandwiches', name: 'Сэндвичи' }
+        ];
 
-            const inventoryItems = [
-                { id: 'inv_beans', name: 'Зерно (гр.)', step: 1000 },
-                { id: 'inv_milk', name: 'Молоко (мл.)', step: 1000 },
-                { id: 'inv_alt_milk', name: 'Альт. молоко (мл.)', step: 1000 },
-                { id: 'inv_syrup', name: 'Сиропы (мл.)', step: 1000 },
-                { id: 'inv_cups_s', name: 'Стаканы Маленькие (шт)', step: 50 },
-                { id: 'inv_cups_l', name: 'Стаканы Большие (шт)', step: 50 },
-                { id: 'inv_lids', name: 'Крышки (шт)', step: 100 }
-            ];
+        const inventoryData = [
+            { id: 'inv_beans', name: 'Зерно (гр.)', step: 1000 },
+            { id: 'inv_milk', name: 'Молоко (мл.)', step: 1000 },
+            { id: 'inv_alt_milk', name: 'Альт. молоко (мл.)', step: 1000 },
+            { id: 'inv_syrup', name: 'Сиропы (мл.)', step: 1000 },
+            { id: 'inv_cups_s', name: 'Стаканы Мал. (шт)', step: 50 },
+            { id: 'inv_cups_l', name: 'Стаканы Бол. (шт)', step: 50 },
+            { id: 'inv_lids', name: 'Крышки (шт)', step: 100 }
+        ];
 
-            function createCounterItem(item, isInventory = false) {
-                const step = item.step || 1;
-                return `
-                <div class="item">
-                    <div class="item-name">${item.name}</div>
-                    <div class="counter-group">
-                        <button class="btn-counter" onclick="changeValue('${item.id}', -${step})">−</button>
-                        <input type="number" id="${item.id}" class="counter-value ${isInventory ? 'inv-val' : 'check-val'}" value="0" min="0" inputmode="numeric" oninput="checkValidation()">
-                        <button class="btn-counter" onclick="changeValue('${item.id}', ${step})">+</button>
-                    </div>
+        // Функция рендера HTML-блока
+        function createCounter(item, isInventory = false) {
+            const step = item.step || 1;
+            const targetClass = isInventory ? 'inv-val' : 'check-val';
+            return `
+            <div class="item">
+                <div class="item-name">${item.name}</div>
+                <div class="counter-group">
+                    <button class="btn-counter" onclick="window.changeValue('${item.id}', -${step})">−</button>
+                    <input type="number" id="${item.id}" class="counter-value ${targetClass}" value="0" min="0" inputmode="numeric" oninput="window.checkValidation()">
+                    <button class="btn-counter" onclick="window.changeValue('${item.id}', ${step})">+</button>
                 </div>
-            `;
-            }
+            </div>`;
+        }
 
-            function renderItems() {
-                document.getElementById('drinks-container').innerHTML = drinks.map(item => createCounterItem(item)).join('');
-                document.getElementById('food-container').innerHTML = food.map(item => createCounterItem(item)).join('');
-                document.getElementById('inventory-container').innerHTML = inventoryItems.map(item => createCounterItem(item, true)).join('');
-            }
+        // Рендер всех элементов в ДОМ
+        document.getElementById('drinks-container').innerHTML = drinksData.map(i => createCounter(i, false)).join('');
+        document.getElementById('food-container').innerHTML = foodData.map(i => createCounter(i, false)).join('');
+        document.getElementById('inventory-container').innerHTML = inventoryData.map(i => createCounter(i, true)).join('');
 
-            function switchTab(event, tabId) {
-                if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        // Управление вкладками
+        window.switchTab = function (event, tabId) {
+            if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 
-                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
 
-                document.getElementById(tabId).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            if (event) {
                 event.currentTarget.classList.add('active');
-
-                // Если мы на вкладке склада, меняем логику главной кнопки
-                checkValidation();
-            }
-
-            function changeValue(id, delta) {
-                const input = document.getElementById(id);
-                let val = parseInt(input.value) || 0;
-                val += delta;
-                if (val < 0) val = 0;
-                input.value = val;
-
-                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-
-                checkValidation();
-            }
-
-            function checkValidation() {
-                const isInventoryTab = document.getElementById('inventory').classList.contains('active');
-
-                if (isInventoryTab) {
-                    // Валидация для вкладки инвентаризации
-                    let totalInv = 0;
-                    document.querySelectorAll('.inv-val').forEach(input => {
-                        totalInv += (parseInt(input.value) || 0);
-                    });
-
-                    document.getElementById('totalPreview').style.display = 'none';
-
-                    if (totalInv > 0) {
-                        tg.MainButton.text = "ОТПРАВИТЬ ПРИХОД НА СКЛАД";
-                        tg.MainButton.show();
-                    } else {
-                        tg.MainButton.hide();
+            } else {
+                // Если клик программный (по ссылке из бота), ищем нужную вкладку и активируем её стили
+                const tabs = document.querySelectorAll('.tab');
+                tabs.forEach(tab => {
+                    const text = tab.innerText.toLowerCase();
+                    if ((tabId === 'inventory' && text.includes('склад')) ||
+                        (tabId === 'finance' && text.includes('касса')) ||
+                        (tabId === 'food' && text.includes('еда')) ||
+                        (tabId === 'drinks' && text.includes('напитки'))) {
+                        tab.classList.add('active');
                     }
+                });
+            }
+
+            window.checkValidation();
+        };
+
+        // Чтение параметров URL при запуске
+        const urlParams = new URLSearchParams(window.location.search);
+        const startTab = urlParams.get('tab');
+        if (startTab === 'inventory') {
+            window.switchTab(null, 'inventory');
+        }
+
+        // Изменение значений +/-
+        window.changeValue = function (id, delta) {
+            const input = document.getElementById(id);
+            let val = parseInt(input.value) || 0;
+            val += delta;
+            if (val < 0) val = 0;
+            input.value = val;
+
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            window.checkValidation();
+        };
+
+        // Валидация и показ главной кнопки
+        window.checkValidation = function () {
+            const isInventory = document.getElementById('inventory').classList.contains('active');
+
+            if (isInventory) {
+                // Логика для склада
+                document.getElementById('totalPreview').style.display = 'none';
+                let totalInv = 0;
+                document.querySelectorAll('.inv-val').forEach(inp => totalInv += (parseInt(inp.value) || 0));
+
+                if (totalInv > 0) {
+                    tg.MainButton.text = "ОТПРАВИТЬ ПРИХОД ТОВАРА";
+                    tg.MainButton.color = "#2a9d8f";
+                    tg.MainButton.textColor = "#ffffff";
+                    tg.MainButton.show();
                 } else {
-                    // Валидация для отчета за смену
-                    let totalItems = 0;
-                    let totalFinance = 0;
+                    tg.MainButton.hide();
+                }
+            } else {
+                // Логика для отчета смены
+                let totalItems = 0;
+                document.querySelectorAll('.check-val').forEach(inp => totalItems += (parseInt(inp.value) || 0));
 
-                    document.querySelectorAll('.check-val').forEach(input => {
-                        totalItems += (parseInt(input.value) || 0);
-                    });
+                const cash = parseInt(document.getElementById('cash').value) || 0;
+                const card = parseInt(document.getElementById('card').value) || 0;
+                const totalFin = cash + card;
 
-                    const cash = parseInt(document.getElementById('cash').value) || 0;
-                    const card = parseInt(document.getElementById('card').value) || 0;
-                    totalFinance = cash + card;
-
-                    const preview = document.getElementById('totalPreview');
-                    preview.style.display = (totalItems > 0 || totalFinance > 0) ? 'block' : 'none';
-                    preview.innerText = `Итого: ${totalFinance} руб. | Позиций: ${totalItems}`;
-
-                    if (totalItems > 0 || totalFinance > 0) {
-                        tg.MainButton.text = "ОТПРАВИТЬ ОТЧЕТ";
-                        tg.MainButton.show();
-                    } else {
-                        tg.MainButton.hide();
-                    }
+                const preview = document.getElementById('totalPreview');
+                if (totalItems > 0 || totalFin > 0) {
+                    preview.style.display = 'block';
+                    preview.innerText = `Итого: ${totalFin} руб. | Позиций: ${totalItems}`;
+                    tg.MainButton.text = "ОТПРАВИТЬ ОТЧЕТ";
+                    tg.MainButton.color = "#d4a373";
+                    tg.MainButton.textColor = "#1e1e2f";
+                    tg.MainButton.show();
+                } else {
+                    preview.style.display = 'none';
+                    tg.MainButton.hide();
                 }
             }
+        };
 
-            function sendDataToBot() {
-                const isInventoryTab = document.getElementById('inventory').classList.contains('active');
+        // Отправка данных боту
+        tg.onEvent('mainButtonClicked', function () {
+            const isInventory = document.getElementById('inventory').classList.contains('active');
+            let data = {};
 
-                let data = {};
-
-                if (isInventoryTab) {
-                    data = {
-                        type: 'inventory_arrival',
-                        items: {}
-                    };
-                    inventoryItems.forEach(inv => {
-                        data.items[inv.id] = parseInt(document.getElementById(inv.id).value) || 0;
-                    });
-                } else {
-                    data = {
-                        type: 'shift_report',
-                        items: {},
-                        finances: {
-                            cash: parseInt(document.getElementById('cash').value) || 0,
-                            card: parseInt(document.getElementById('card').value) || 0,
-                            expenses: parseInt(document.getElementById('expenses').value) || 0
-                        },
-                        comment: document.getElementById('comment').value || "Нет"
-                    };
-
-                    drinks.forEach(d => {
-                        data.items[d.id] = parseInt(document.getElementById(d.id).value) || 0;
-                    });
-                    food.forEach(f => {
-                        data.items[f.id] = parseInt(document.getElementById(f.id).value) || 0;
-                    });
-                }
-
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                tg.MainButton.showProgress();
-
-                // Sending to telegram
-                tg.sendData(JSON.stringify(data));
+            if (isInventory) {
+                data = { type: 'inventory_arrival', items: {} };
+                inventoryData.forEach(i => {
+                    data.items[i.id] = parseInt(document.getElementById(i.id).value) || 0;
+                });
+            } else {
+                data = {
+                    type: 'shift_report',
+                    items: {},
+                    finances: {
+                        cash: parseInt(document.getElementById('cash').value) || 0,
+                        card: parseInt(document.getElementById('card').value) || 0,
+                        expenses: parseInt(document.getElementById('expenses').value) || 0
+                    },
+                    comment: document.getElementById('comment').value || "Нет"
+                };
+                drinksData.forEach(d => { data.items[d.id] = parseInt(document.getElementById(d.id).value) || 0; });
+                foodData.forEach(f => { data.items[f.id] = parseInt(document.getElementById(f.id).value) || 0; });
             }
 
-            renderItems();
-            checkValidation(); // Hide button initially
-        </script>
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            tg.MainButton.showProgress();
+
+            // Отправка в телеграм
+            tg.sendData(JSON.stringify(data));
+        });
+
+        // Инициализация скрытой кнопки на старте
+        tg.MainButton.hide();
+
+    </script>
 </body>
 
 </html>
