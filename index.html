@@ -1,561 +1,63 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Отчет Кофейни</title>
+    <title>Расход Сырья</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            --text-main: #ffffff;
-            --text-muted: #a0a0b5;
-            --accent: #d4a373;
-            --accent-hover: #faedcd;
-            --danger: #e63946;
-            --success: #2a9d8f;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 20px 16px 100px;
-            overflow-x: hidden;
-        }
-
-        /* Glassmorphism Classes */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--glass-shadow);
-            padding: 20px;
-            margin-bottom: 24px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        /* Profile Header */
-        .profile-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding: 20px;
-        }
-
-        .avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), #b5835a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
-            color: white;
-        }
-
-        .profile-info h2 {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .profile-info p {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            padding: 6px;
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tab.active {
-            color: var(--bg-gradient);
-            background: var(--accent);
-            box-shadow: 0 4px 12px rgba(212, 163, 115, 0.3);
-            font-weight: 600;
-        }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Category Title */
-        .category-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 24px 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .category-title i {
-            font-style: normal;
-        }
-
-        /* Counter Item */
-        .item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .item:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        .item-name {
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .counter-group {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 4px;
-        }
-
-        .btn-counter {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: transparent;
-            color: var(--accent);
-            font-size: 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .btn-counter:active {
-            background: rgba(212, 163, 115, 0.2);
-        }
-
-        .counter-value {
-            width: 44px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-main);
-            background: transparent;
-            border: none;
-            outline: none;
-        }
-
-        .counter-value::-webkit-inner-spin-button,
-        .counter-value::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Finance Inputs */
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .amount-input,
-        .text-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-            color: white;
-            font-size: 20px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 500;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            outline: none;
-        }
-
-        .amount-input:focus,
-        .text-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
-        }
-
-        .text-input {
-            font-size: 15px;
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* Total Preview */
-        .total-preview {
-            background: linear-gradient(135deg, rgba(42, 157, 143, 0.1), rgba(42, 157, 143, 0.05));
-            border: 1px solid rgba(42, 157, 143, 0.3);
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 24px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--success);
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-    </style>
 </head>
-
 <body>
+    <div class="container">
+        <header>
+            <h1>Учет Сырья</h1>
+            <p>Внесите израсходованные остатки</p>
+        </header>
 
-    <!-- Header -->
-    <div class="profile-card glass-panel">
-        <div class="avatar" id="avatar">Б</div>
-        <div class="profile-info">
-            <h2 id="username">Бариста</h2>
-            <p>Панель управления смены</p>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab(event, 'drinks')">☕️ Напитки</div>
-        <div class="tab" onclick="switchTab(event, 'food')">🥐 Еда</div>
-        <div class="tab" onclick="switchTab(event, 'finance')">💰 Касса</div>
-        <div class="tab" onclick="switchTab(event, 'inventory')">📦 Склад</div>
-    </div>
-
-    <!-- Drinks Tab -->
-    <div id="drinks" class="tab-content active glass-panel">
-        <div class="category-title"><i>☕️</i> Продажи напитков</div>
-        <div id="drinks-container"></div>
-    </div>
-
-    <!-- Food Tab -->
-    <div id="food" class="tab-content glass-panel">
-        <div class="category-title"><i>🥐</i> Продажи еды</div>
-        <div id="food-container"></div>
-    </div>
-
-    <!-- Finance Tab -->
-    <div id="finance" class="tab-content glass-panel">
-        <div class="category-title"><i>💰</i> Финансы за смену</div>
-
-        <div class="input-group">
-            <label>Наличные в кассе</label>
-            <input type="number" id="cash" class="amount-input check-val" placeholder="0" min="0" inputmode="numeric"
-                oninput="checkValidation()">
-        </div>
-
-        <div class="input-group">
-            <label>Безнал / Терминал</label>
-            <input type="number" id="card" class="amount-input check-val" placeholder="0" min="0" inputmode="numeric"
-                oninput="checkValidation()">
-        </div>
-
-        <div class="input-group">
-            <label>Расходы из кассы (списания)</label>
-            <input type="number" id="expenses" class="amount-input" placeholder="0" min="0" inputmode="numeric">
-        </div>
-
-        <div class="input-group" style="margin-top: 32px;">
-            <label>Комментарий (опционально)</label>
-            <textarea id="comment" class="text-input"
-                placeholder="Опишите, если были нестандартные возвраты или проблемы..."></textarea>
-        </div>
-
-        <div id="totalPreview" class="total-preview">
-            Итого: 0 руб. | Позиций: 0
-        </div>
-    </div>
-
-    <!-- Inventory Tab -->
-    <div id="inventory" class="tab-content glass-panel">
-        <div class="category-title"><i>📦</i> Поступление товаров</div>
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5;">Укажите количество
-            ингредиентов при их поступлении (закупке), чтобы пересчитать остатки на складе.</p>
-        <div id="inventory-container"></div>
-    </div>
-
-    <script>
-        // Инициализация Telegram API
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-
-        // Установка данных профиля
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            document.getElementById('username').innerText = user.first_name || 'Бариста';
-            document.getElementById('avatar').innerText = (user.first_name || 'Б').charAt(0).toUpperCase();
-        } else {
-            document.getElementById('username').innerText = 'Гость';
-            document.getElementById('avatar').innerText = 'Г';
-        }
-
-        // Данные для генерации полей
-        const drinksData = [
-            { id: 'espresso', name: 'Эспрессо' },
-            { id: 'americano', name: 'Американо' },
-            { id: 'cappuccino', name: 'Капучино' },
-            { id: 'latte', name: 'Латте' },
-            { id: 'flatwhite', name: 'Флэт Уайт' },
-            { id: 'raf', name: 'Раф' },
-            { id: 'tea', name: 'Чай' },
-            { id: 'other_drinks', name: 'Другие напитки' }
-        ];
-
-        const foodData = [
-            { id: 'pastry', name: 'Выпечка' },
-            { id: 'dessert', name: 'Десерты' },
-            { id: 'sandwiches', name: 'Сэндвичи' }
-        ];
-
-        const inventoryData = [
-            { id: 'inv_beans', name: 'Зерно (гр.)', step: 1000 },
-            { id: 'inv_milk', name: 'Молоко (мл.)', step: 1000 },
-            { id: 'inv_alt_milk', name: 'Альт. молоко (мл.)', step: 1000 },
-            { id: 'inv_syrup', name: 'Сиропы (мл.)', step: 1000 },
-            { id: 'inv_cups_s', name: 'Стаканы Мал. (шт)', step: 50 },
-            { id: 'inv_cups_l', name: 'Стаканы Бол. (шт)', step: 50 },
-            { id: 'inv_lids', name: 'Крышки (шт)', step: 100 }
-        ];
-
-        // Функция рендера HTML-блока
-        function createCounter(item, isInventory = false) {
-            const step = item.step || 1;
-            const targetClass = isInventory ? 'inv-val' : 'check-val';
-            return `
-            <div class="item">
-                <div class="item-name">${item.name}</div>
-                <div class="counter-group">
-                    <button class="btn-counter" onclick="window.changeValue('${item.id}', -${step})">−</button>
-                    <input type="number" id="${item.id}" class="counter-value ${targetClass}" value="0" min="0" inputmode="numeric" oninput="window.checkValidation()">
-                    <button class="btn-counter" onclick="window.changeValue('${item.id}', ${step})">+</button>
+        <main>
+            <div class="card">
+                <div class="input-group">
+                    <label for="grain">☕️ Зерно (кг)</label>
+                    <div class="number-control">
+                        <button class="btn-minus" onclick="updateValue('grain', -0.1, 1)">-</button>
+                        <input type="number" id="grain" value="0.0" step="0.1" min="0">
+                        <button class="btn-plus" onclick="updateValue('grain', 0.1, 1)">+</button>
+                    </div>
                 </div>
-            </div>`;
-        }
 
-        // Рендер всех элементов в ДОМ
-        document.getElementById('drinks-container').innerHTML = drinksData.map(i => createCounter(i, false)).join('');
-        document.getElementById('food-container').innerHTML = foodData.map(i => createCounter(i, false)).join('');
-        document.getElementById('inventory-container').innerHTML = inventoryData.map(i => createCounter(i, true)).join('');
+                <div class="input-group">
+                    <label for="milk">🍼 Молоко (л)</label>
+                    <div class="number-control">
+                        <button class="btn-minus" onclick="updateValue('milk', -1, 0)">-</button>
+                        <input type="number" id="milk" value="0" step="1" min="0">
+                        <button class="btn-plus" onclick="updateValue('milk', 1, 0)">+</button>
+                    </div>
+                </div>
 
-        // Управление вкладками
-        window.switchTab = function (event, tabId) {
-            if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+                <div class="input-group">
+                    <label for="cups250">🥤 Стаканы 250мл (шт)</label>
+                    <div class="number-control">
+                        <button class="btn-minus" onclick="updateValue('cups250', -1, 0)">-</button>
+                        <input type="number" id="cups250" value="0" step="1" min="0">
+                        <button class="btn-plus" onclick="updateValue('cups250', 1, 0)">+</button>
+                    </div>
+                </div>
 
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+                <div class="input-group">
+                    <label for="cups400">🥤 Стаканы 400мл (шт)</label>
+                    <div class="number-control">
+                        <button class="btn-minus" onclick="updateValue('cups400', -1, 0)">-</button>
+                        <input type="number" id="cups400" value="0" step="1" min="0">
+                        <button class="btn-plus" onclick="updateValue('cups400', 1, 0)">+</button>
+                    </div>
+                </div>
+            </div>
 
-            document.getElementById(tabId).classList.add('active');
+            <button id="submit-btn" class="primary-btn">Отправить отчет</button>
+        </main>
+    </div>
 
-            if (event) {
-                event.currentTarget.classList.add('active');
-            } else {
-                // Если клик программный (по ссылке из бота), ищем нужную вкладку и активируем её стили
-                const tabs = document.querySelectorAll('.tab');
-                tabs.forEach(tab => {
-                    const text = tab.innerText.toLowerCase();
-                    if ((tabId === 'inventory' && text.includes('склад')) ||
-                        (tabId === 'finance' && text.includes('касса')) ||
-                        (tabId === 'food' && text.includes('еда')) ||
-                        (tabId === 'drinks' && text.includes('напитки'))) {
-                        tab.classList.add('active');
-                    }
-                });
-            }
-
-            window.checkValidation();
-        };
-
-        // Чтение параметров URL при запуске
-        const urlParams = new URLSearchParams(window.location.search);
-        const startTab = urlParams.get('tab');
-        if (startTab === 'inventory') {
-            window.switchTab(null, 'inventory');
-        }
-
-        // Изменение значений +/-
-        window.changeValue = function (id, delta) {
-            const input = document.getElementById(id);
-            let val = parseInt(input.value) || 0;
-            val += delta;
-            if (val < 0) val = 0;
-            input.value = val;
-
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            window.checkValidation();
-        };
-
-        // Валидация и показ главной кнопки
-        window.checkValidation = function () {
-            const isInventory = document.getElementById('inventory').classList.contains('active');
-
-            if (isInventory) {
-                // Логика для склада
-                document.getElementById('totalPreview').style.display = 'none';
-                let totalInv = 0;
-                document.querySelectorAll('.inv-val').forEach(inp => totalInv += (parseInt(inp.value) || 0));
-
-                if (totalInv > 0) {
-                    tg.MainButton.text = "ОТПРАВИТЬ ПРИХОД ТОВАРА";
-                    tg.MainButton.color = "#2a9d8f";
-                    tg.MainButton.textColor = "#ffffff";
-                    tg.MainButton.show();
-                } else {
-                    tg.MainButton.hide();
-                }
-            } else {
-                // Логика для отчета смены
-                let totalItems = 0;
-                document.querySelectorAll('.check-val').forEach(inp => totalItems += (parseInt(inp.value) || 0));
-
-                const cash = parseInt(document.getElementById('cash').value) || 0;
-                const card = parseInt(document.getElementById('card').value) || 0;
-                const totalFin = cash + card;
-
-                const preview = document.getElementById('totalPreview');
-                if (totalItems > 0 || totalFin > 0) {
-                    preview.style.display = 'block';
-                    preview.innerText = `Итого: ${totalFin} руб. | Позиций: ${totalItems}`;
-                    tg.MainButton.text = "ОТПРАВИТЬ ОТЧЕТ";
-                    tg.MainButton.color = "#d4a373";
-                    tg.MainButton.textColor = "#1e1e2f";
-                    tg.MainButton.show();
-                } else {
-                    preview.style.display = 'none';
-                    tg.MainButton.hide();
-                }
-            }
-        };
-
-        // Отправка данных боту
-        window.submitData = function () {
-            const isInventory = document.getElementById('inventory').classList.contains('active');
-            let data = {};
-
-            if (isInventory) {
-                data = { type: 'inventory_arrival', items: {} };
-                inventoryData.forEach(i => {
-                    data.items[i.id] = parseInt(document.getElementById(i.id).value) || 0;
-                });
-            } else {
-                data = {
-                    type: 'shift_report',
-                    items: {},
-                    finances: {
-                        cash: parseInt(document.getElementById('cash').value) || 0,
-                        card: parseInt(document.getElementById('card').value) || 0,
-                        expenses: parseInt(document.getElementById('expenses').value) || 0
-                    },
-                    comment: document.getElementById('comment').value || "Нет"
-                };
-                drinksData.forEach(d => { data.items[d.id] = parseInt(document.getElementById(d.id).value) || 0; });
-                foodData.forEach(f => { data.items[f.id] = parseInt(document.getElementById(f.id).value) || 0; });
-            }
-
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            tg.MainButton.showProgress();
-
-            // Отправка в телеграм с небольшой задержкой для надежности
-            setTimeout(() => {
-                tg.sendData(JSON.stringify(data));
-            }, 50);
-        };
-
-        tg.MainButton.onClick(window.submitData);
-
-        // Инициализация скрытой кнопки на старте
-        tg.MainButton.hide();
-
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>
